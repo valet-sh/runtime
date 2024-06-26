@@ -1,0 +1,14 @@
+.idea
+*.retry
+*.pyc
+.install
+.version
+.upgrade
+.history
+.inprogress
+.tmp
+.vagrant
+.vscode
+/log
+/venv
+/collections
