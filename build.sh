@@ -15,7 +15,7 @@ pipx install portable-python
 echo ""
 echo "run 'portable-python build ${PYTHON_VERSION} -m openssl'"
 
-portable-python build ${PYTHON_VERSION} -m openssl
+portable-python build ${PYTHON_VERSION} -mxz,openssl,gdbm
 
 echo ""
 echo "run 'build/ppp-marker/${PYTHON_VERSION}/bin/pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt'"
