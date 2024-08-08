@@ -5,7 +5,9 @@ set -e
 echo ""
 echo "run 'mkdir /usr/local/valet-sh'"
 
-mkdir /usr/local/valet-sh
+sudo mkdir /usr/local/valet-sh
+
+sudo chmod 777 /usr/local/valet-sh
 
 echo ""
 echo "run 'python3 -m venv venv'"
