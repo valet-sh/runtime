@@ -3,27 +3,18 @@
 set -e
 
 echo ""
-echo "run 'pip install pipx'"
+echo "run 'mkdir /usr/local/valet-sh'"
 
-pip install pipx
-
-echo ""
-echo "run 'pipx install portable-python'"
-
-pipx install portable-python
+mkdir /usr/local/valet-sh
 
 echo ""
-echo "run 'portable-python build ${PYTHON_VERSION} -m openssl'"
+echo "run 'python3 -m venv venv'"
 
-portable-python build ${PYTHON_VERSION} -mxz,openssl,gdbm
-
-echo ""
-echo "run 'build/ppp-marker/${PYTHON_VERSION}/bin/pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt'"
-
-build/ppp-marker/${PYTHON_VERSION}/bin/pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt
-
+cd /usr/local/valet-sh
+python3 -m venv venv
 
 echo ""
-echo "run 'portable-python recompress build/ppp-marker/${PYTHON_VERSION} gz'"
+echo "run 'pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt'"
 
-portable-python recompress build/ppp-marker/${PYTHON_VERSION} gz
+source venv/bin/activate
+pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt
