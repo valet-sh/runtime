@@ -13,7 +13,24 @@ echo ""
 echo "run '/usr/bin/python3 -m venv venv'"
 
 cd /usr/local/valet-sh
-/usr/bin/python3 -m venv venv
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # check if brew is installed
+    if ! command -v ${HOMEBREW_PREFIX}/bin/brew &> /dev/null
+        then
+            echo " - brew could not be found. Installing..."
+            yes | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >> ${VSH_INSTALL_LOG} 2>&1
+            export CPPFLAGS=-I${HOMEBREW_PREFIX}/opt/openssl/include
+            export LDFLAGS=-L${HOMEBREW_PREFIX}/opt/openssl/lib
+        fi
+
+    echo " - install required brew packages"
+    ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10 >> ${VSH_INSTALL_LOG} 2>&1    
+
+    python3.10 -m venv venv
+else
+  /usr/bin/python3 -m venv venv
+fi
 
 echo ""
 echo "run 'pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt'"
