@@ -10,10 +10,10 @@ sudo mkdir /usr/local/valet-sh
 sudo chmod 777 /usr/local/valet-sh
 
 echo ""
-echo "run 'python3 -m venv venv'"
+echo "run '/usr/bin/python3 -m venv venv'"
 
 cd /usr/local/valet-sh
-python3 -m venv venv
+/usr/bin/python3 -m venv venv
 
 echo ""
 echo "run 'pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt'"
