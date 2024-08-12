@@ -14,6 +14,12 @@ echo "run '/usr/bin/python3 -m venv venv'"
 
 cd /usr/local/valet-sh
 
+HOMEBREW_PREFIX="/usr/local"
+
+if [[ "$OSTYPE" == "darwin"* ]] && [[ "$ARCH" == "arm"* ]]; then
+  HOMEBREW_PREFIX="/opt/homebrew"
+fi
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # check if brew is installed
     if ! command -v ${HOMEBREW_PREFIX}/bin/brew &> /dev/null
