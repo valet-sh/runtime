@@ -6,7 +6,7 @@ on:
       - "*"
 
 jobs:
-  release:
+  build-release:
     strategy:
       matrix:
         include:
@@ -40,3 +40,10 @@ jobs:
              ${{ matrix.name }}-${{ github.ref_name }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  publish-release:
+    needs: build-release
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh release edit ${{ github.ref_name }} --publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
