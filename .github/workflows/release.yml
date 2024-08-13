@@ -32,12 +32,12 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
       - run: bash ${GITHUB_WORKSPACE}/build.sh
-      - run: tar czf ${{ matrix.name }}-${{ github.ref_name }}.tar.gz -C /usr/local/valet-sh venv
+      - run: tar czf ${{ matrix.name }}.tar.gz -C /usr/local/valet-sh venv
       - name: Release with Notes
         uses: softprops/action-gh-release@v1
         with:
           files: |
-             ${{ matrix.name }}-${{ github.ref_name }}.tar.gz
+             ${{ matrix.name }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish-release:
