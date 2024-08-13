@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
       - run: bash ${GITHUB_WORKSPACE}/build.sh
-      - run: echo ${{ github.ref_name }} > /usr/local/valet-sh/.version
+      - run: echo ${{ github.ref_name }} > /usr/local/valet-sh/venv/.version
       - run: tar czf ${{ matrix.name }}.tar.gz -C /usr/local/valet-sh venv
       - name: Release with Notes
         uses: softprops/action-gh-release@v1
