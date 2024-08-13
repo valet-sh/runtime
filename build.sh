@@ -35,7 +35,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     echo " - install required brew packages"
     ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10
 
-    python3.10 -m venv venv
+    ${HOMEBREW_PREFIX}/bin/python3.10 -m venv venv
 else
   /usr/bin/python3 -m venv venv
 fi
