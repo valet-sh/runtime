@@ -1,3 +1,18 @@
+##
+#   Copyright 2025 TechDivision GmbH
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+##
 ---
 
 - hosts: local
@@ -27,6 +42,9 @@
           shell: git pull
           args:
             chdir: /usr/local/valet-sh/valet-sh/
+
+        - name: "include 'check-runtime.yml'"
+          include_tasks: check-runtime.yml
 
     - name: use stable branch branch
       when:
@@ -75,14 +93,11 @@
             msg: "FATAL: No valid release found!"
           when: not valet_sh_release_tag_is_valid|bool
 
-        - debug:
-            var: valet_sh_latest_valid_release_tag
-
-        - debug:
-            var: valet_sh_current_installed_release
-
         - name: "Checkout Release {{ valet_sh_latest_valid_release_tag }}"
           shell: git checkout --force --quiet "{{ valet_sh_latest_valid_release_tag }}"
           args:
             chdir: /usr/local/valet-sh/valet-sh/
           when: valet_sh_current_installed_release.stdout is version(valet_sh_latest_valid_release_tag, operator='<', version_type="semantic")
+
+        - name: "include 'check-runtime.yml'"
+          include_tasks: check-runtime.yml

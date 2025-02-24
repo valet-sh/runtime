@@ -1,0 +1,59 @@
+##
+#   Copyright 2025 TechDivision GmbH
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+##
+---
+
+- name: "check if runtime release '{{ valet_sh_target_runtime_version }}' exists"
+  ansible.builtin.uri:
+    url: "https://github.com/valet-sh/runtime/releases/download/{{ valet_sh_target_runtime_version }}/{{ valet_sh_runtime_specific_version }}.tar.gz"
+    method: HEAD
+  register: valet_sh_runtime_remote_version_check_obj
+  failed_when: false
+
+- name: fail when status code is not 200
+  fail:
+    msg: "FATAL: Release '{{ valet_sh_target_runtime_version }}' was not found!"
+  when: valet_sh_runtime_remote_version_check_obj.status|int != 200
+
+- name: "cleanup tmp directories"
+  file:
+    path: "/usr/local/valet-sh/venv-tmp"
+    state: absent
+
+- name: "check if '/usr/local/valet-sh/venv' exists"
+  stat:
+    path: /usr/local/valet-sh/venv
+  register: valet_sh_current_venv_dir_stat
+
+- name: "backup current venv"
+  shell: "mv /usr/local/valet-sh/venv /usr/local/valet-sh/venv-tmp"
+  when: valet_sh_current_venv_dir_stat.stat.exists|bool
+
+- name: "Download und unpack runtime release '{{ valet_sh_target_runtime_version }}'"
+  ansible.builtin.unarchive:
+    src: "https://github.com/valet-sh/runtime/releases/download/{{ valet_sh_target_runtime_version }}/{{ valet_sh_runtime_specific_version }}.tar.gz"
+    dest: /usr/local/valet-sh/
+    remote_src: yes
+
+- name: "set current runtime version '{{ valet_sh_runtime_specific_version }}-{{ valet_sh_target_runtime_version }}' in file '/usr/local/valet-sh/venv/.version'"
+  copy:
+    content: "{{ valet_sh_runtime_specific_version }}-{{ valet_sh_target_runtime_version }}"
+    dest: "/usr/local/valet-sh/venv/.version"
+
+- name: "cleanup tmp directories"
+  file:
+    path: "/usr/local/valet-sh/venv-tmp"
+    state: absent
+

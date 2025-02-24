@@ -1,0 +1,73 @@
+##
+#   Copyright 2025 TechDivision GmbH
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+##
+---
+
+- name: "check if file '/usr/local/valet-sh/valet-sh/.runtime_version' exists"
+  ansible.builtin.stat:
+    path: /usr/local/valet-sh/valet-sh/.runtime_version
+  register: valet_sh_target_runtime_version_file_stat
+
+- name: "fail when file '/usr/local/valet-sh/valet-sh/.runtime_version' does not exists"
+  fail:
+    msg: "'.runtime_version' does not exist in '/usr/local/valet-sh/valet-sh/'"
+  when: not valet_sh_target_runtime_version_file_stat.stat.exists|bool
+
+- name: "Read target runtime version from file /usr/local/valet-sh/valet-sh/.runtime_version"
+  set_fact:
+    valet_sh_target_runtime_version: "{{ lookup('ansible.builtin.file', '/usr/local/valet-sh/valet-sh/.runtime_version') | trim }}"
+
+- name: "check if file '/usr/local/valet-sh/venv/.version' exists"
+  ansible.builtin.stat:
+    path: /usr/local/valet-sh/venv/.version
+  register: valet_sh_current_runtime_version_file_stat
+
+- name: "Read target runtime version from file '/usr/local/valet-sh/venv/.version'"
+  set_fact:
+    valet_sh_installed_runtime_version: "{{ lookup('ansible.builtin.file', '/usr/local/valet-sh/venv/.version') | trim }}"
+  when: valet_sh_current_runtime_version_file_stat.stat.exists|bool
+
+- name: "set 'valet_sh_runtime_specific_version' to '{{ ansible_distribution | lower }}_{{ ansible_distribution_release | lower}}-{{ ansible_architecture }}'"
+  set_fact:
+    valet_sh_runtime_specific_version: "{{ ansible_distribution | lower }}_{{ ansible_distribution_release | lower}}-{{ ansible_architecture }}"
+  when: ansible_distribution == "Ubuntu"
+
+- name: "set 'valet_sh_runtime_specific_version' to 'ubuntu_jammy-{{ ansible_architecture }}'"
+  set_fact:
+    valet_sh_runtime_specific_version: "ubuntu_jammy-{{ ansible_architecture }}"
+  when: ansible_distribution == "Linux Mint" and (ansible_distribution_release == 'vanessa' or ansible_distribution_release == 'vera' or ansible_distribution_release == 'victoria' or ansible_distribution_release == 'virginia')
+
+- name: "set 'valet_sh_runtime_specific_version' to 'ubuntu_focal-{{ ansible_architecture }}'"
+  set_fact:
+    valet_sh_runtime_specific_version: "ubuntu_focal-{{ ansible_architecture }}"
+  when: ansible_distribution == "Linux Mint" and (ansible_distribution_release == 'ulyana' or ansible_distribution_release == 'ulyssa' or ansible_distribution_release == 'uma' or ansible_distribution_release == 'una')
+
+- name: "set 'valet_sh_runtime_specific_version' to '{{ ansible_distribution | lower }}-{{ ansible_architecture }}'"
+  set_fact:
+    valet_sh_runtime_specific_version: "{{ ansible_distribution | lower }}-{{ ansible_architecture }}"
+  when: ansible_distribution == "MacOSX"
+
+- name: "fail when operating system could not be detected"
+  fail:
+    msg: "not able to detect operating system"
+  when: valet_sh_runtime_specific_version is not defined or valet_sh_runtime_specific_version|length==0
+
+- name: "set var 'valet_sh_target_runtime_specific_version'"
+  set_fact:
+    valet_sh_target_runtime_specific_version: "{{ valet_sh_runtime_specific_version }}-{{ valet_sh_target_runtime_version }}"
+
+- name: "run runtime upgrade"
+  include_tasks: sub-upgrade-runtime.yml
+  when: not valet_sh_current_runtime_version_file_stat.stat.exists|bool or (valet_sh_installed_runtime_version is defined and valet_sh_installed_runtime_version != valet_sh_target_runtime_specific_version)
