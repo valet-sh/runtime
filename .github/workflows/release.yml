@@ -10,15 +10,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: ubuntu_jammy-amd64
+          - name: ubuntu_jammy-x86_64
             os: ubuntu-22.04
             python_version: '3.10'
             
-          - name: ubuntu_noble-amd64
+          - name: ubuntu_noble-x86_64
             os: ubuntu-24.04
             python_version: '3.12'
             
-          - name: macos-amd64
+          - name: macos-x86_64
             os: macos-13
             python_version: '3.10'
             
