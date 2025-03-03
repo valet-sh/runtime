@@ -3,6 +3,6 @@ ansible==9.*
 beautifultable
 PyMySQL
 cryptography
-git+https://github.com/valet-sh/cli@1.4.0
+git+https://github.com/valet-sh/cli@next-2.0.0
 shyaml
 lxml
