@@ -68,6 +68,20 @@
   set_fact:
     valet_sh_target_runtime_specific_version: "{{ valet_sh_runtime_specific_version }}-{{ valet_sh_target_runtime_version }}"
 
-- name: "run runtime upgrade"
-  include_tasks: sub-upgrade-runtime.yml
+- name: "block"
   when: not valet_sh_current_runtime_version_file_stat.stat.exists|bool or (valet_sh_installed_runtime_version is defined and valet_sh_installed_runtime_version != valet_sh_target_runtime_specific_version)
+  block:
+    - vsh-out:
+        msg: " - new runtime '{{ valet_sh_target_runtime_version }}' is required"
+
+    - name: "run runtime upgrade"
+      import_tasks: sub-upgrade-runtime.yml
+
+- name: "block"
+  when:
+   - valet_sh_current_runtime_version_file_stat.stat.exists|bool
+   - valet_sh_installed_runtime_version is defined
+   - valet_sh_installed_runtime_version == valet_sh_target_runtime_specific_version
+  block:
+    - vsh-out:
+        msg: " - runtime '{{ valet_sh_target_runtime_version }}' is up2date"

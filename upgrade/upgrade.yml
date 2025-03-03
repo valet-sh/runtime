@@ -15,9 +15,22 @@
 ##
 ---
 
-- hosts: local
+- name: self-upgrade
+  hosts: local
   gather_facts: true
   tasks:
+    - vsh-out:
+        msg: " - Checking for new version"
+
+    - name: "get current working directory"
+      set_fact:
+        working_dir: "{{lookup('pipe', 'pwd')}}"
+
+    - name: "ensure status.log is absent"
+      file:
+        path: "{{ working_dir }}/log/status.log"
+        state: absent
+
     - name: Get stats of the FS object
       ansible.builtin.stat:
         path: /usr/local/valet-sh/etc/ENABLE_NEXT
@@ -27,6 +40,9 @@
       when:
         - valet_sh_next_branch_flag_stat.stat.exists|bool
       block:
+        - vsh-out:
+            msg: " - DEVMODE ENABLED: Fetching 'next' branch"
+
         - name: checkout 'https://github.com/valet-sh/valet-sh.git' repository
           ansible.builtin.git:
             repo: https://github.com/valet-sh/valet-sh.git
@@ -93,11 +109,22 @@
             msg: "FATAL: No valid release found!"
           when: not valet_sh_release_tag_is_valid|bool
 
-        - name: "Checkout Release {{ valet_sh_latest_valid_release_tag }}"
-          shell: git checkout --force --quiet "{{ valet_sh_latest_valid_release_tag }}"
-          args:
-            chdir: /usr/local/valet-sh/valet-sh/
+        - name: "block"
           when: valet_sh_current_installed_release.stdout is version(valet_sh_latest_valid_release_tag, operator='<', version_type="semantic")
+          block:
+            - vsh-out:
+                msg: " - Upgrading to release {{ valet_sh_latest_valid_release_tag }}"
+
+            - name: "Checkout Release {{ valet_sh_latest_valid_release_tag }}"
+              shell: git checkout --force --quiet "{{ valet_sh_latest_valid_release_tag }}"
+              args:
+                chdir: /usr/local/valet-sh/valet-sh/
+
+        - name: "block"
+          when: valet_sh_current_installed_release.stdout is version(valet_sh_latest_valid_release_tag, operator='>=', version_type="semantic")
+          block:
+            - vsh-out:
+                msg: " - Already on latest version {{ valet_sh_current_installed_release.stdout }}"
 
         - name: "include 'check-runtime.yml'"
-          include_tasks: check-runtime.yml
+          import_tasks: check-runtime.yml

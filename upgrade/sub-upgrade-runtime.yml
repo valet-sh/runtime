@@ -57,3 +57,5 @@
     path: "/usr/local/valet-sh/venv-tmp"
     state: absent
 
+- vsh-out:
+    msg: " - Runtime '{{ valet_sh_target_runtime_version }}' successfully installed"
