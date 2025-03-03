@@ -45,3 +45,9 @@ echo "run 'pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt'"
 
 source venv/bin/activate
 pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt
+
+deactivate
+
+echo ""
+echo "copy 'upgrade' folder into venv"
+cp -r ${GITHUB_WORKSPACE}/upgrade .
