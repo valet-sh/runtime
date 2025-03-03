@@ -50,4 +50,4 @@ deactivate
 
 echo ""
 echo "copy 'upgrade' folder into venv"
-cp -r ${GITHUB_WORKSPACE}/upgrade .
+cp -r ${GITHUB_WORKSPACE}/upgrade venv/
