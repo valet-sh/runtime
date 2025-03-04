@@ -60,7 +60,7 @@
             chdir: /usr/local/valet-sh/valet-sh/
 
         - name: "include 'check-runtime.yml'"
-          include_tasks: check-runtime.yml
+          import_tasks: check-runtime.yml
 
     - name: use stable branch branch
       when:
