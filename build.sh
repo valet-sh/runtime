@@ -33,9 +33,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         fi
 
     echo " - install required brew packages"
-    ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.10
+    ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.12
 
-    ${HOMEBREW_PREFIX}/bin/python3.10 -m venv venv
+    ${HOMEBREW_PREFIX}/bin/python3.12 -m venv venv
 else
   /usr/bin/python3 -m venv venv
 fi
@@ -47,7 +47,3 @@ source venv/bin/activate
 pip3 install -r ${GITHUB_WORKSPACE}/requirements.txt
 
 deactivate
-
-echo ""
-echo "copy 'upgrade' folder into venv"
-cp -r ${GITHUB_WORKSPACE}/upgrade venv/
