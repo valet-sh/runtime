@@ -1,5 +1,5 @@
 testresources
-ansible==10.*
+ansible==13.*
 beautifultable
 PyMySQL
 cryptography
