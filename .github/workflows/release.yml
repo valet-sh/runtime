@@ -19,6 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash ${GITHUB_WORKSPACE}/build.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo ${{ github.ref_name }} > /usr/local/valet-sh/venv/.version
       - run: tar czf ${{ matrix.name }}.tar.gz -C /usr/local/valet-sh venv
       - name: Release with Notes

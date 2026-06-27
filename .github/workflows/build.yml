@@ -11,18 +11,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash ${GITHUB_WORKSPACE}/build.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test-build-ubuntu-2604:
     runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v4
       - run: bash ${GITHUB_WORKSPACE}/build.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test-build-macos-15:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - run: bash ${GITHUB_WORKSPACE}/build.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   test-build-macos-26:
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
       - run: bash ${GITHUB_WORKSPACE}/build.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
