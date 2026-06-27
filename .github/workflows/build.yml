@@ -8,41 +8,21 @@ on:
 jobs:
   test-build-ubuntu-2404:
     runs-on: ubuntu-24.04
-    env:
-      PYTHON_VERSION: 3.11.8
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    - run: bash ${GITHUB_WORKSPACE}/build.sh
-  test-build-ubuntu-2604:
-    runs-on: ubuntu-26.04
-    env:
-      PYTHON_VERSION: 3.11.8
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.14'
+      - run: bash ${GITHUB_WORKSPACE}/build.sh
+  test-build-ubuntu-2604:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v4
       - run: bash ${GITHUB_WORKSPACE}/build.sh
   test-build-macos-15:
     runs-on: macos-15
-    env:
-      PYTHON_VERSION: 3.11.8
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    - run: bash ${GITHUB_WORKSPACE}/build.sh
+      - uses: actions/checkout@v4
+      - run: bash ${GITHUB_WORKSPACE}/build.sh
   test-build-macos-26:
     runs-on: macos-26
-    env:
-      PYTHON_VERSION: 3.11.8
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-    - run: bash ${GITHUB_WORKSPACE}/build.sh
+      - uses: actions/checkout@v4
+      - run: bash ${GITHUB_WORKSPACE}/build.sh
