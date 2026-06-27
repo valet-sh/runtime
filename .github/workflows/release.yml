@@ -10,7 +10,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: ubuntu-x86_64
+          - name: ubuntu_jammy-x86_64
+            os: ubuntu-22.04
+
+          - name: ubuntu_noble-x86_64
             os: ubuntu-24.04
 
           - name: macos-arm64
