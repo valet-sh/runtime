@@ -25,9 +25,10 @@ mkdir -p "${VENV_DIR}"
 echo ""
 echo "Fetching latest Python 3.12 release from python-build-standalone..."
 RELEASE_DATA=$(curl -s "https://api.github.com/repos/astral-sh/python-build-standalone/releases/latest")
-PYTHON_URL=$(echo "$RELEASE_DATA" | jq -r \
-    ".assets[] | select(.name | test(\"cpython-3\\.12\\.[0-9]+\\+[0-9]+-${TRIPLE}-install_only\\.tar\\.gz$\")) | .browser_download_url" \
-    | head -1)
+PYTHON_URL=$(echo "$RELEASE_DATA" | \
+    jq -r '.assets[].browser_download_url' | \
+    grep -E "cpython-3\.12\.[0-9]+\+[0-9]+-${TRIPLE}-install_only\.tar\.gz$" | \
+    head -1)
 
 if [[ -z "$PYTHON_URL" ]]; then
     echo "Error: Could not find Python 3.12 install_only asset for ${TRIPLE}"
