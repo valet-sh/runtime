@@ -6,3 +6,4 @@ cryptography
 git+https://github.com/valet-sh/cli@3.0.1
 shyaml
 lxml
+requests
