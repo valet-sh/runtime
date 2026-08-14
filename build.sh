@@ -33,9 +33,15 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
         fi
 
     echo " - install required brew packages"
-    ${HOMEBREW_PREFIX}/bin/brew install openssl rust python@3.12
+    ${HOMEBREW_PREFIX}/bin/brew install openssl rust
 
-    ${HOMEBREW_PREFIX}/bin/python3.12 -m venv venv
+    # the intel runner image ships python 3.12 symlinks in ${HOMEBREW_PREFIX}/bin
+    # that brew does not own, so the link step of a plain install fails
+    ${HOMEBREW_PREFIX}/bin/brew install python@3.12 \
+      || ${HOMEBREW_PREFIX}/bin/brew link --overwrite python@3.12
+
+    # use the keg path to stay independent of the ${HOMEBREW_PREFIX}/bin symlinks
+    ${HOMEBREW_PREFIX}/opt/python@3.12/bin/python3.12 -m venv venv
 else
   /usr/bin/python3 -m venv venv
 fi
