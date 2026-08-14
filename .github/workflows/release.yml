@@ -5,37 +5,42 @@ on:
     tags:
       - "*"
 
+permissions:
+  contents: write
+
 jobs:
   build-release:
+    name: build-release (${{ matrix.name }})
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: ubuntu_jammy-x86_64
             os: ubuntu-22.04
             python_version: '3.10'
-            
+
           - name: ubuntu_noble-x86_64
             os: ubuntu-24.04
             python_version: '3.12'
-            
+
           - name: macos-x86_64
-            os: macos-13
+            os: macos-15-intel
             python_version: '3.12'
-            
+
           - name: macos-arm64
             os: macos-15
             python_version: '3.12'
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python_version }}
       - run: bash ${GITHUB_WORKSPACE}/build.sh
       - run: echo ${{ github.ref_name }} > /usr/local/valet-sh/venv/.version
       - run: tar czf ${{ matrix.name }}.tar.gz -C /usr/local/valet-sh venv
       - name: Release with Notes
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           files: |
              ${{ matrix.name }}.tar.gz
@@ -46,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: false
           prerelease: false
